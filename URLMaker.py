@@ -43,7 +43,7 @@ class URLMaker:
         # First check if the URL list file exists
         fname = self.url_file
         if not URLMaker.check_file_exists(fname):
-            print "Error, file not found:", fname
+            print("Error, file not found:", fname)
             return
 
         #outfname = "url.cols.html"
@@ -55,7 +55,7 @@ class URLMaker:
 
         line_cnt, real_line_cnt, colcnt = 0, 0, 0
 
-        with open(fname, 'r') as f:
+        with open(fname, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 line_cnt += 1
                 l = line.strip()
@@ -97,9 +97,9 @@ class URLMaker:
         os.remove(outfname)
         os.rename(tmpname, outfname)
 
-        print "File line count {} (useful count {})".format(line_cnt, real_line_cnt)
-        print "File size =", os.path.getsize(outfname)
-        print "End of function generate_body_rows"
+        print("File line count {} (useful count {})".format(line_cnt, real_line_cnt))
+        print("File size =", os.path.getsize(outfname))
+        print("End of function generate_body_rows")
 
         self.body_file = outfname
 
@@ -127,13 +127,13 @@ class URLMaker:
 
     def generate_index_html(self, fname="index.html", body_file="url.cols.html"):
         if not URLMaker.check_file_exists(self.index_file_head):
-            print "[ERROR] The head part (file) for the final index.html doesn't exist"
+            print("[ERROR] The head part (file) for the final index.html doesn't exist")
             return False
         if not URLMaker.check_file_exists(self.index_file_tail):
-            print "[ERROR] The tail part (file) for the final index.html doesn't exist"
+            print("[ERROR] The tail part (file) for the final index.html doesn't exist")
             return False
         if not self.generate_body_rows(body_file):
-            print "[ERROR] Failed to create the body part (file) for the final index.html"
+            print("[ERROR] Failed to create the body part (file) for the final index.html")
             return False
 
         with open(fname, "wb") as fout:
@@ -152,10 +152,10 @@ class URLMaker:
             fout.close()
 
         if not URLMaker.check_file_exists(fname):
-            print "[ERROR] Failed to create the final index.html:", fname
+            print("[ERROR] Failed to create the final index.html:", fname)
             return False
 
-        print "File size of {}: {}".format(fname, os.path.getsize(fname))
+        print("File size of {}: {}".format(fname, os.path.getsize(fname)))
         return True
 
 

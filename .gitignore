@@ -1,2 +1,11 @@
 # Ignore generated files
 index.html
+url.cols.html
+
+# Config files from PyCharm
+/.idea/.gitignore
+/.idea/HomePageMaker.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/vcs.xml
