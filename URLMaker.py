@@ -47,11 +47,14 @@ class URLMaker:
             return
 
         #outfname = "url.cols.html"
-        outf = open(outfname, "w")
+        outf = open(outfname, "w", encoding='utf-8')
 
         dbg_cnt = 0
 
-        url_pattern = re.compile(r'.*data-url="(\S+)".*title="(\S+)"')
+        #url_pattern = re.compile(r'.*data-url="(\S+)".*title="(\S+)"')
+        url_pattern = re.compile(r'data-url="(.*)"')
+        title_pattern = re.compile(r'title="(.*)"')
+        img_pattern = re.compile(r'image="(.*)"')
 
         line_cnt, real_line_cnt, colcnt = 0, 0, 0
 
@@ -61,15 +64,26 @@ class URLMaker:
                 l = line.strip()
                 if len(l) == 0 or l.startswith("<!--"):
                     continue
-                m = url_pattern.match(l)
-                if m is None:
+                if not l.startswith("data-url"):
                     continue
 
-                dbg_cnt += 1
-                str_url = m.group(1)
-                str_webname = m.group(2)
-                str_imgf = "undef128x128.png"
+                kwlist = l.split(",")
+
+                assert len(kwlist) == 2 or len(kwlist) == 3
+
+                url_m = url_pattern.match(kwlist[0].strip())
+                title_m = title_pattern.match(kwlist[1].strip())
+                img_m = img_pattern.match(kwlist[2].strip()) if len(kwlist) == 3 else None
+
+                if url_m is None or title_m is None:
+                    continue
+                str_url = url_m.group(1)
+                str_webname = title_m.group(1)
+                str_imgf = "undef128x128.png" if img_m is None else img_m.group(1)
                 str_descri = str_webname
+
+                dbg_cnt += 1
+
                 if colcnt == 0:
                     outf.write(self.row_start_label())
                     outf.write("\n")
@@ -87,7 +101,7 @@ class URLMaker:
         outf.close()
 
         tmpname = "mytmp.html"
-        with open(outfname, "r") as af:
+        with open(outfname, "r", encoding='utf-8') as af:
             line_list = af.readlines()
             output_lines = "\t\t\t".join(line_list)
             output_lines = "\t\t\t" + output_lines
