@@ -80,6 +80,7 @@ class URLMaker:
                 str_url = url_m.group(1)
                 str_webname = title_m.group(1)
                 str_imgf = "undef128x128.png" if img_m is None else img_m.group(1)
+                str_imgf = "undef128x128.png" if len(str_imgf) == 0 else str_imgf
                 str_descri = str_webname
 
                 dbg_cnt += 1
