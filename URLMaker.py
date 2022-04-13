@@ -105,7 +105,7 @@ class URLMaker:
             line_list = af.readlines()
             output_lines = "\t\t\t".join(line_list)
             output_lines = "\t\t\t" + output_lines
-            with open(tmpname, "w") as fw:
+            with open(tmpname, "w", encoding='utf-8') as fw:
                 fw.writelines(output_lines)
 
         os.remove(outfname)
