@@ -4,11 +4,11 @@ import os
 
 class URLMaker:
     def __init__(self, url_list_file, ncolumn=4):
-        '''
+        """
         Constructor of class URLMaker
         :param url_list_file: A file which contains a list of URLs
         :param ncolumn: How many icon/URL for a row to have on the page (body), default is 4
-        '''
+        """
         self.url_file = url_list_file
         self.ncol = ncolumn
         self.dbg_row_limit = -1
@@ -26,19 +26,19 @@ class URLMaker:
 
     @staticmethod
     def check_file_exists(fname):
-        '''
+        """
         Checks if a file exists
         :param fname: The file to check
         :return: True if exists, otherwise False
-        '''
+        """
         return True if os.path.exists(fname) else False
 
     def generate_body_rows(self, outfname="url.cols.html"):
-        '''
+        """
         Generate the main page body which contains the URLs
         :param outfname the file name to write out
         :return: If the outfname is successfully written out
-        '''
+        """
 
         # First check if the URL list file exists
         fname = self.url_file
