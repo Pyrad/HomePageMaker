@@ -3,7 +3,7 @@ import os
 
 
 class URLMaker:
-    def __init__(self, url_list_file, ncolumn=4):
+    def __init__(self, url_list_file, default_img="github120x120.png", ncolumn=4):
         """
         Constructor of class URLMaker
         :param url_list_file: A file which contains a list of URLs
@@ -15,6 +15,7 @@ class URLMaker:
         self.body_file = None
         self.index_file_head = "index_part_head.html"
         self.index_file_tail = "index_part_tail.html"
+        self.default_img = default_img # For those without any image description
 
     @staticmethod
     def row_start_label():
@@ -177,10 +178,8 @@ class URLMaker:
 
 if __name__ == "__main__":
     url_list_file = "classified_urls.html"
-    umkr = URLMaker(url_list_file)
-
-    str_url = "https://github.com"
     str_imgf= "github120x120.png"
+    umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
 
     umkr.generate_index_html("index.html")
 
