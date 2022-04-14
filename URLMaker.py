@@ -178,7 +178,7 @@ class URLMaker:
 
 if __name__ == "__main__":
     url_list_file = "classified_urls.html"
-    str_imgf= "github120x120.png"
+    str_imgf= "undef.png"
     umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
 
     umkr.generate_index_html("index.html")
