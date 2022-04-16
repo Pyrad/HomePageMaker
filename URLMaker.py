@@ -162,7 +162,8 @@ class URLMaker:
             fbody.close()
 
             # A temp fix to avoid mismatched label
-            fout.write("\t\t\t</div>".encode('utf-8'))
+            # Looks no need to do it now, enn... strange 2022-04-16 21:25
+            #fout.write("\t\t\t</div>".encode('utf-8'))
 
             ftail = open(self.index_file_tail, "rb")
             fout.write(ftail.read())
