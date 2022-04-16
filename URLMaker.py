@@ -1,5 +1,6 @@
 import re
 import os
+import shutil
 
 
 class URLMaker:
@@ -16,6 +17,17 @@ class URLMaker:
         self.index_file_head = "index_part_head.html"
         self.index_file_tail = "index_part_tail.html"
         self.default_img = default_img # For those without any image description
+        self.url_number = 0
+        # keep all the icons used, to copy to a customized directory
+        self.icon_list = []
+        self.final_index_html = None
+
+    def reset(self):
+        self.dbg_row_limit = -1
+        self.body_file = None
+        self.url_number = 0
+        self.icon_list = []
+        self.final_index_html = None
 
     @staticmethod
     def row_start_label():
@@ -30,9 +42,18 @@ class URLMaker:
         """
         Checks if a file exists
         :param fname: The file to check
-        :return: True if exists, otherwise False
+        :return: True if it exists, otherwise False
         """
-        return True if os.path.exists(fname) else False
+        return True if os.path.isfile(fname) else False
+
+    @staticmethod
+    def check_dir_exist(fdir):
+        """
+        Checks if a directory exists
+        :param fdir: A directory name
+        :return: True if it exists, otherwise False
+        """
+        return True if os.path.isdir(fdir) else False
 
     def generate_body_rows(self, outfname="url.cols.html"):
         """
@@ -40,6 +61,9 @@ class URLMaker:
         :param outfname the file name to write out
         :return: If the outfname is successfully written out
         """
+
+        # First all of first, reset some internal variables
+        self.reset()
 
         # First check if the URL list file exists
         fname = self.url_file
@@ -84,7 +108,13 @@ class URLMaker:
                 str_imgf = "undef128x128.png" if len(str_imgf) == 0 else str_imgf
                 str_descri = str_webname
 
+                # Keep icon names
+                if str_imgf != "undef128x128.png" and not str_imgf in self.icon_list:
+                    self.icon_list.append(str_imgf)
+
                 dbg_cnt += 1
+
+                self.url_number += 1
 
                 if colcnt == 0:
                     outf.write(self.row_start_label())
@@ -152,6 +182,8 @@ class URLMaker:
             print("[ERROR] Failed to create the body part (file) for the final index.html")
             return False
 
+        self.final_index_html = fname
+
         with open(fname, "wb") as fout:
             fhead = open(self.index_file_head, "rb")
             fout.write(fhead.read())
@@ -162,8 +194,8 @@ class URLMaker:
             fbody.close()
 
             # A temp fix to avoid mismatched label
-            # Looks no need to do it now, enn... strange 2022-04-16 21:25
-            #fout.write("\t\t\t</div>".encode('utf-8'))
+            if self.url_number % 4 != 0:
+                fout.write("\t\t\t</div>".encode('utf-8'))
 
             ftail = open(self.index_file_tail, "rb")
             fout.write(ftail.read())
@@ -178,6 +210,56 @@ class URLMaker:
         print("File size of {}: {}".format(fname, os.path.getsize(fname)))
         return True
 
+    def do_copy(self, icon_dest, index_html_dest):
+        icon_copy_list = []
+        icon_missing_list = []
+        if len(self.icon_list) == 0:
+            print("[ERROR] icon list is empty, skip copy")
+            return
+        else:
+            for icon in self.icon_list:
+                iname = "icons/" + icon
+                if self.check_file_exists(iname):
+                    icon_copy_list.append(icon)
+                else:
+                    icon_missing_list.append(icon)
+            print("[INFO] number of icons to copy is", len(icon_copy_list))
+            if len(icon_missing_list) != 0:
+                print("[WARNING] Missing following icon files to copy:")
+                for icon in icon_missing_list:
+                    print("  ", icon)
+
+        if not self.check_file_exists(self.final_index_html):
+            print("[ERROR] index file doesn't exist, skip copy")
+            return
+        if not self.check_dir_exist(icon_dest):
+            print("[ERROR] icon_dest directory doesn't exist, skip copy")
+            return
+        if not self.check_dir_exist(index_html_dest):
+            print("[ERROR] index directory doesn't exist, skip copy")
+            return
+
+        # Copy index.html file
+        src_idx_html = self.final_index_html
+        dest_idx_html = index_html_dest + "/" + self.final_index_html
+        print("Copying {} to {}".format(src_idx_html, dest_idx_html))
+        shutil.copy(src=src_idx_html, dst=dest_idx_html)
+
+        # Copy icon files
+        cur_icon_dir = "icons"
+        dest_icon_dir = icon_dest
+        already_exist_cnt = 0
+        for icon in icon_copy_list:
+            srcname = cur_icon_dir + "/" + icon
+            destname = dest_icon_dir + "/" + icon
+            if self.check_file_exists(destname):
+                already_exist_cnt += 1
+                continue
+            shutil.copy(src=srcname, dst=destname)
+        if already_exist_cnt != 0:
+            print("[WARNING] {} icon already exists in destination directory, skip copy".format(already_exist_cnt))
+
+
 
 
 if __name__ == "__main__":
@@ -186,4 +268,11 @@ if __name__ == "__main__":
     umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
 
     umkr.generate_index_html("index.html")
+
+    do_copy = True
+    if do_copy:
+        icon_dest = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master/assets/images/logos"
+        index_html_dest = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master/cn"
+        umkr.do_copy(icon_dest=icon_dest, index_html_dest=index_html_dest)
+
 
