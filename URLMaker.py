@@ -270,9 +270,10 @@ if __name__ == "__main__":
     umkr.generate_index_html("index.html")
 
     do_copy = True
+    webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
     if do_copy:
-        icon_dest = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master/assets/images/logos"
-        index_html_dest = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master/cn"
+        icon_dest = webStackPageDir + "/assets/images/logos"
+        index_html_dest = webStackPageDir + "/cn"
         umkr.do_copy(icon_dest=icon_dest, index_html_dest=index_html_dest)
 
 
