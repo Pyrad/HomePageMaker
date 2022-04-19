@@ -272,9 +272,12 @@ if __name__ == "__main__":
     do_copy = True
     webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
     webStackPageDir_snps = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
+
+    use_default_pre = True
     if do_copy:
-        icon_dest = webStackPageDir + "/assets/images/logos"
-        index_html_dest = webStackPageDir + "/cn"
+        path_pre = webStackPageDir if use_default_pre else webStackPageDir_snps
+        icon_dest = path_pre + "/assets/images/logos"
+        index_html_dest = path_pre + "/cn"
         umkr.do_copy(icon_dest=icon_dest, index_html_dest=index_html_dest)
 
 
