@@ -271,6 +271,7 @@ if __name__ == "__main__":
 
     do_copy = True
     webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
+    webStackPageDir_snps = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
     if do_copy:
         icon_dest = webStackPageDir + "/assets/images/logos"
         index_html_dest = webStackPageDir + "/cn"
