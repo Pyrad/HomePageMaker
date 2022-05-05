@@ -21,6 +21,8 @@ class URLMaker:
         # keep all the icons used, to copy to a customized directory
         self.icon_list = []
         self.final_index_html = None
+        # To get URL information from file "classified_urls.html"
+        self.section_dict = None
 
     def reset(self):
         self.dbg_row_limit = -1
@@ -182,8 +184,9 @@ class URLMaker:
         title_pattern = re.compile(r'title="(.*)"')
         img_pattern = re.compile(r'image="(.*)"')
 
-        section_dict = dict()
-        section_dict['__NOSECTION__'] = []
+        # Reset self.section_dict
+        self.section_dict = dict()
+        self.section_dict['__NOSECTION__'] = []
 
         line_cnt = 0
         f = open(fname, 'r', encoding='utf-8')
@@ -198,7 +201,7 @@ class URLMaker:
                 llist = l.split()
                 if len(llist) == 3:
                     cur_sect_name = llist[1]
-                    section_dict[cur_sect_name] = []
+                    self.section_dict[cur_sect_name] = []
                 continue
             if not l.startswith("data-url"):
                 continue
@@ -218,12 +221,12 @@ class URLMaker:
             str_imgf = "undef128x128.png" if len(str_imgf) == 0 else str_imgf
             str_descri = str_webname
 
-            csect = section_dict[cur_sect_name]
+            csect = self.section_dict[cur_sect_name]
             csect.append([str_url, str_webname, str_imgf, str_descri])
 
         f.close()
 
-        for sname, msglist in section_dict.items():
+        for sname, msglist in self.section_dict.items():
             print("Section {} has {} items".format(sname, len(msglist)))
             for urlstr in msglist:
                 print("\t", urlstr)
@@ -317,6 +320,14 @@ class URLMaker:
             print("[WARNING] {} icon already exists in destination directory, skip copy".format(already_exist_cnt))
 
     @staticmethod
+    def default_test():
+        url_list_file = "classified_urls.html"
+        str_imgf = "undef.png"
+        umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
+
+        umkr.get_section_sets()
+
+    @staticmethod
     def default_run():
         url_list_file = "classified_urls.html"
         str_imgf = "undef.png"
@@ -338,7 +349,8 @@ class URLMaker:
 
 
 if __name__ == "__main__":
-    URLMaker.default_run()
+    #URLMaker.default_run()
+    URLMaker.default_test()
 
 
 
