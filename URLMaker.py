@@ -264,8 +264,8 @@ class URLMaker:
         mlist.insert(0, tag_start)
         mlist.append(tag_end)
 
-        for line in mlist:
-            print(line)
+        #for line in mlist:
+        #    print(line)
 
         return mlist
 
@@ -333,8 +333,45 @@ class URLMaker:
                 cnt += 1
             allsectlines.append('\t\t\t<br />')
 
-        for sline in allsectlines:
-            print(sline)
+        #for sline in allsectlines:
+        #    print(sline)
+        return allsectlines
+
+    def get_main_footer(self):
+        return  '\t\t\t<!--END UED团队 -->\n'\
+                '\t\t\t<!-- Main Footer -->\n'\
+                '\t\t\t<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->\n'\
+                '\t\t\t<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->\n'\
+                '\t\t\t<!-- Or class "fixed" to  always fix the footer to the end of page -->\n'\
+                '\t\t\t<footer class="main-footer sticky footer-type-1">\n'\
+                '\t\t\t\t<div class="footer-inner">\n'\
+                '\t\t\t\t\t<!-- Add your copyright text here -->\n'\
+                '\t\t\t\t\t<div class="footer-text">\n'\
+                '\t\t\t\t\t\t&copy; 2017-2020\n'\
+                '\t\t\t\t\t\t<a href="../cn/about.html"><strong>WebStack</strong></a> design by <a href="http://viggoz.com" target="_blank"><strong>Viggo</strong></a>\n'\
+                '\t\t\t\t\t\t<!--  - Purchase for only <strong>23$</strong> -->\n'\
+                '\t\t\t\t\t</div>\n'\
+                '\t\t\t\t\t<!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->\n'\
+                '\t\t\t\t\t<div class="go-up">\n'\
+                '\t\t\t\t\t\t<a href="#" rel="go-top">\n'\
+                '\t\t\t\t\t\t\t<i class="fa-angle-up"></i>\n'\
+                '\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t</div>\n'\
+                '\t\t\t\t</div>\n'\
+                '\t\t\t</footer>'
+
+    def get_main_content(self):
+        main_content_lines = []
+        tag_start = '\t\t<div class="main-content">'
+        tag_end = '\t\t</div>'
+
+        main_content_lines.append(tag_start)
+        main_content_lines.append(self.get_navbar_raw_text())
+        main_content_lines.extend(self.get_all_section_rows())
+        main_content_lines.append(tag_end)
+
+        return main_content_lines
+
 
 
 
@@ -494,8 +531,18 @@ class URLMaker:
         logo_small = "../assets/images/globe64.png"
 
         umkr.get_section_sets()
-        #umkr.get_side_bar_menu(biglogo=logo_big, smalllogo=logo_small)
-        umkr.get_all_section_rows()
+
+        testdir = 'F:/Pyrad/tmps'
+        sline_file = 'sline_tmp.html'
+        fname = testdir + '/' + sline_file
+
+        slines = umkr.get_side_bar_menu(biglogo=logo_big, smalllogo=logo_small)
+        slines.extend(umkr.get_main_content())
+
+        output_lines = "\n".join(slines)
+        with open(fname, "w", encoding='utf-8') as fw:
+            fw.writelines(output_lines)
+
 
     @staticmethod
     def default_run():
