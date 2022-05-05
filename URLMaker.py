@@ -173,6 +173,23 @@ class URLMaker:
     </div>
 '''.format(url, url, imgf, webname, descri)
 
+    def get_col_raw_text(self, url, imgf, webname, descri):
+        return  '\t\t\t\t<div class="col-sm-3">\n'\
+                '\t\t\t\t\t<div class="xe-widget xe-conversations box2 label-info" onclick="window.open(\'{}\', \'_blank\')" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="{}">\n'\
+                '\t\t\t\t\t\t<div class="xe-comment-entry">\n'\
+                '\t\t\t\t\t\t\t<a class="xe-user-img">\n'\
+                '\t\t\t\t\t\t\t\t<img data-src="../assets/images/logos/{}" class="lozad img-circle" width="40">\n'\
+                '\t\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t\t\t<div class="xe-comment">\n'\
+                '\t\t\t\t\t\t\t\t<a href="#" class="xe-user-name overflowClip_1">\n'\
+                '\t\t\t\t\t\t\t\t\t<strong>{}</strong>\n'\
+                '\t\t\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t\t\t\t<p class="overflowClip_2">{}</p>\n'\
+                '\t\t\t\t\t\t\t</div>\n'\
+                '\t\t\t\t\t\t</div>\n'\
+                '\t\t\t\t\t</div>\n'\
+                '\t\t\t\t</div>'.format(url, url, imgf, webname, descri)
+
     def sidebar_menu_logo_env_raw_test(self, bigimg, smallimg):
         return  '\t\t\t\t<header class="logo-env">\n'\
                 '\t\t\t\t\t<!-- logo -->\n'\
@@ -192,7 +209,7 @@ class URLMaker:
                 '\t\t\t\t\t\t\t<i class="fa-bars"></i>\n'\
                 '\t\t\t\t\t\t</a>\n'\
                 '\t\t\t\t\t</div>\n'\
-                '\t\t\t\t</header>\n'.format(bigimg, smallimg)
+                '\t\t\t\t</header>'.format(bigimg, smallimg)
 
     def sidebar_menu_raw_test(self, name, icon):
         return '\t\t\t\t\t<li>\n'\
@@ -224,8 +241,102 @@ class URLMaker:
         menulist.insert(0, tag_start)
         menulist.append(tag_end)
 
-        for line in menulist:
+        # for line in menulist:
+        #     print(line)
+
+        return menulist
+
+    def get_side_bar_menu_inner(self, biglogo, smalllogo):
+        tag_start = '\t\t\t<div class="sidebar-menu-inner">'
+        tag_end = '\t\t\t</div>'
+        logo_part_lines = self.sidebar_menu_logo_env_raw_test(bigimg=biglogo, smallimg=smalllogo)
+        sidebar_main_menu_lines = self.get_sidebar_main_menu()
+        inner_lines = [tag_start, logo_part_lines]
+        inner_lines.extend(sidebar_main_menu_lines)
+        inner_lines.append(tag_end)
+        return inner_lines
+
+
+    def get_side_bar_menu(self, biglogo, smalllogo):
+        tag_start = '\t\t<div class ="sidebar-menu toggle-others fixed">'
+        tag_end = '\t\t</div>'
+        mlist = self.get_side_bar_menu_inner(biglogo=biglogo, smalllogo=smalllogo)
+        mlist.insert(0, tag_start)
+        mlist.append(tag_end)
+
+        for line in mlist:
             print(line)
+
+        return mlist
+
+    def get_navbar_raw_text(self):
+        return  '\t\t\t<nav class="navbar user-info-navbar" role="navigation">\n'\
+                '\t\t\t\t<!-- User Info, Notifications and Menu Bar -->\n'\
+                '\t\t\t\t<!-- Left links for user info navbar -->\n'\
+                '\t\t\t\t<ul class="user-info-menu left-links list-inline list-unstyled">\n'\
+                '\t\t\t\t\t<li class="hidden-sm hidden-xs">\n'\
+                '\t\t\t\t\t\t<a href="#" data-toggle="sidebar">\n'\
+                '\t\t\t\t\t\t\t<i class="fa-bars"></i>\n'\
+                '\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t</li>\n'\
+                '\t\t\t\t\t<li class="dropdown hover-line language-switcher">\n'\
+                '\t\t\t\t\t\t<a href="../cn/index.html" class="dropdown-toggle" data-toggle="dropdown">\n'\
+                '\t\t\t\t\t\t\t<img src="../assets/images/flags/flag-cn.png" alt="flag-cn" /> Chinese\n'\
+                '\t\t\t\t\t\t</a>\n' \
+                '\t\t\t\t\t\t<ul class="dropdown-menu languages">\n' \
+                '\t\t\t\t\t\t\t<li>\n' \
+                '\t\t\t\t\t\t\t\t<a href="../en/index.html">\n' \
+                '\t\t\t\t\t\t\t\t\t<img src="../assets/images/flags/flag-us.png" alt="flag-us" /> English\n' \
+                '\t\t\t\t\t\t\t\t</a>\n' \
+                '\t\t\t\t\t\t\t</li>\n' \
+                '\t\t\t\t\t\t\t<li class="active">\n' \
+                '\t\t\t\t\t\t\t\t<a href="../cn/index.html">\n' \
+                '\t\t\t\t\t\t\t\t\t<img src="../assets/images/flags/flag-cn.png" alt="flag-cn" /> Chinese\n' \
+                '\t\t\t\t\t\t\t\t</a>\n' \
+                '\t\t\t\t\t\t\t</li>\n' \
+                '\t\t\t\t\t\t</ul>\n' \
+                '\t\t\t\t\t</li>\n' \
+                '\t\t\t\t</ul>\n' \
+                '\t\t\t\t<ul class="user-info-menu right-links list-inline list-unstyled">\n' \
+                '\t\t\t\t\t<li class="hidden-sm hidden-xs">\n' \
+                '\t\t\t\t\t\t<a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">\n' \
+                '\t\t\t\t\t\t\t<i class="fa-github"></i>  GitHub\n' \
+                '\t\t\t\t\t\t</a>\n' \
+                '\t\t\t\t\t</li>\n' \
+                '\t\t\t\t</ul>\n' \
+                '\t\t\t\t<!-- <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a> -->\n' \
+                '\t\t\t</nav>'
+
+    def get_category_tag_line(self, catname):
+        return '\t\t\t<h4 class="text-gray"><i class="linecons-tag" style="margin-right: 7px;" id="{}"></i>{}</h4>'.format(catname, catname)
+
+    def get_all_section_rows(self):
+        allsectlines = []
+        for category_name, urllist in self.section_dict.items():
+            if category_name == "__NOSECTION__":
+                continue
+            tagline = self.get_category_tag_line(catname=category_name)
+            allsectlines.append(tagline)
+            colcnt = 0
+            cnt = 0
+            urllistlen = len(urllist)
+            for item in urllist:
+                if colcnt == 0:
+                    allsectlines.append('\t\t\t<div class="row">')
+                str_url, str_webname, str_imgf, str_descri = item[0], item[1], item[2], item[3]
+                cur_col_line = self.get_col_raw_text(url=str_url, imgf=str_imgf, webname=str_webname, descri=str_descri)
+                allsectlines.append(cur_col_line)
+                if colcnt == 3 or cnt == urllistlen - 1:
+                    allsectlines.append('\t\t\t</div>')
+
+                colcnt = (colcnt + 1) % 4
+                cnt += 1
+            allsectlines.append('\t\t\t<br />')
+
+        for sline in allsectlines:
+            print(sline)
+
+
 
     def get_section_sets(self):
         # First check if the URL list file exists
@@ -379,8 +490,12 @@ class URLMaker:
         str_imgf = "undef.png"
         umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
 
+        logo_big = "../assets/images/worldwide.png"
+        logo_small = "../assets/images/globe64.png"
+
         umkr.get_section_sets()
-        umkr.get_sidebar_main_menu()
+        #umkr.get_side_bar_menu(biglogo=logo_big, smalllogo=logo_small)
+        umkr.get_all_section_rows()
 
     @staticmethod
     def default_run():
