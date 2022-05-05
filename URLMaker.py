@@ -173,6 +173,60 @@ class URLMaker:
     </div>
 '''.format(url, url, imgf, webname, descri)
 
+    def sidebar_menu_logo_env_raw_test(self, bigimg, smallimg):
+        return  '\t\t\t\t<header class="logo-env">\n'\
+                '\t\t\t\t\t<!-- logo -->\n'\
+                '\t\t\t\t\t<div class="logo">\n'\
+                '\t\t\t\t\t\t<a href="index.html" class="logo-expanded">\n'\
+                '\t\t\t\t\t\t\t<img src="{}" width="70%" alt="" />\n'\
+                '\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t\t<a href="index.html" class="logo-collapsed">\n'\
+                '\t\t\t\t\t\t\t<img src="{}" width="40" alt="" />\n'\
+                '\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t</div>\n'\
+                '\t\t\t\t\t<div class="mobile-menu-toggle visible-xs">\n'\
+                '\t\t\t\t\t\t<a href="#" data-toggle="user-info-menu">\n'\
+                '\t\t\t\t\t\t\t<i class="linecons-cog"></i>\n'\
+                '\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t\t<a href="#" data-toggle="mobile-menu">\n'\
+                '\t\t\t\t\t\t\t<i class="fa-bars"></i>\n'\
+                '\t\t\t\t\t\t</a>\n'\
+                '\t\t\t\t\t</div>\n'\
+                '\t\t\t\t</header>\n'.format(bigimg, smallimg)
+
+    def sidebar_menu_raw_test(self, name, icon):
+        return '\t\t\t\t\t<li>\n'\
+               '\t\t\t\t\t\t<a href="#{}" class="smooth">\n'\
+               '\t\t\t\t\t\t\t<i class="{}"></i>\n'\
+               '\t\t\t\t\t\t\t<span class="title">{}</span>\n'\
+               '\t\t\t\t\t\t</a>\n'\
+               '\t\t\t\t\t</li>'.format(name, icon, name)
+
+
+    def get_sidebar_menu_list(self):
+        if self.section_dict is None:
+            return
+
+        mlist = []
+        for name in self.section_dict.keys():
+            # Skip a pseudo section just in case
+            if name == "__NOSECTION__":
+                continue
+            rtext = self.sidebar_menu_raw_test(name, "linecons-star")
+            #print(rtext)
+            mlist.append(rtext)
+        return mlist
+
+    def get_sidebar_main_menu(self):
+        tag_start = '\t\t\t\t<ul id = "main-menu" class ="main-menu">'
+        tag_end = '\t\t\t\t</ul>\n'
+        menulist = self.get_sidebar_menu_list()
+        menulist.insert(0, tag_start)
+        menulist.append(tag_end)
+
+        for line in menulist:
+            print(line)
+
     def get_section_sets(self):
         # First check if the URL list file exists
         fname = self.url_file
@@ -226,10 +280,10 @@ class URLMaker:
 
         f.close()
 
-        for sname, msglist in self.section_dict.items():
-            print("Section {} has {} items".format(sname, len(msglist)))
-            for urlstr in msglist:
-                print("\t", urlstr)
+        # for sname, msglist in self.section_dict.items():
+        #     print("Section {} has {} items".format(sname, len(msglist)))
+        #     for urlstr in msglist:
+        #         print("\t", urlstr)
 
     def generate_index_html(self, fname="index.html", body_file="url.cols.html"):
         if not URLMaker.check_file_exists(self.index_file_head):
@@ -326,6 +380,7 @@ class URLMaker:
         umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
 
         umkr.get_section_sets()
+        umkr.get_sidebar_main_menu()
 
     @staticmethod
     def default_run():
