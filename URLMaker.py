@@ -475,6 +475,7 @@ class URLMaker:
         main_content_lines.append(tag_start)
         main_content_lines.append(self.get_navbar_raw_text())
         main_content_lines.extend(self.get_all_section_rows())
+        main_content_lines.append(self.get_main_footer())
         main_content_lines.append(tag_end)
 
         return main_content_lines
