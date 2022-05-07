@@ -445,8 +445,7 @@ class URLMaker:
         return allsectlines
 
     def get_main_footer(self):
-        return  '\t\t\t<!--END UED团队 -->\n'\
-                '\t\t\t<!-- Main Footer -->\n'\
+        return  '\t\t\t<!-- Main Footer -->\n'\
                 '\t\t\t<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->\n'\
                 '\t\t\t<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->\n'\
                 '\t\t\t<!-- Or class "fixed" to  always fix the footer to the end of page -->\n'\
