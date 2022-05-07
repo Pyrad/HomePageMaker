@@ -1,6 +1,7 @@
 import re
 import os
 import shutil
+import uuid
 
 
 class URLMaker:
@@ -605,13 +606,22 @@ class URLMaker:
         return True
 
     def do_copy(self, icon_dest, index_html_dest):
+        # Copy icon images
+        # First get all the icon images list (represented by a set)
+        all_icon_list = []
+        for category_name, urllist in self.section_dict.items():
+            if category_name == "__NOSECTION__":
+                continue
+            all_icon_list.extend([item[2] for item in urllist])
+        all_icon_set = set(all_icon_list)
+
         icon_copy_list = []
         icon_missing_list = []
-        if len(self.icon_list) == 0:
+        if len(all_icon_set) == 0:
             print("[ERROR] icon list is empty, skip copy")
             return
         else:
-            for icon in self.icon_list:
+            for icon in all_icon_set:
                 iname = "icons/" + icon
                 if self.check_file_exists(iname):
                     icon_copy_list.append(icon)
@@ -619,7 +629,7 @@ class URLMaker:
                     icon_missing_list.append(icon)
             print("[INFO] number of icons to copy is", len(icon_copy_list))
             if len(icon_missing_list) != 0:
-                print("[WARNING] Missing following icon files to copy:")
+                print("[WARNING] Missing following icon files ({} in total) to copy:".format(len(icon_missing_list)))
                 for icon in icon_missing_list:
                     print("  ", icon)
 
@@ -643,6 +653,7 @@ class URLMaker:
         cur_icon_dir = "icons"
         dest_icon_dir = icon_dest
         already_exist_cnt = 0
+        copy_cnt = 0
         for icon in icon_copy_list:
             srcname = cur_icon_dir + "/" + icon
             destname = dest_icon_dir + "/" + icon
@@ -650,8 +661,10 @@ class URLMaker:
                 already_exist_cnt += 1
                 continue
             shutil.copy(src=srcname, dst=destname)
+            copy_cnt += 1
         if already_exist_cnt != 0:
             print("[WARNING] {} icon already exists in destination directory, skip copy".format(already_exist_cnt))
+        print("[INFO] Copied {} icons".format(copy_cnt))
 
     @staticmethod
     def default_test():
@@ -664,15 +677,37 @@ class URLMaker:
 
         umkr.get_section_sets()
 
-        testdir = 'F:/Pyrad/tmps'
-        sline_file = 'sline_tmp.html'
-        fname = testdir + '/' + sline_file
+        #testdir = 'F:/Pyrad/tmps'
+        #sline_file = 'sline_tmp.html'
+        #sline_file = 'index.html'
+        #fname = testdir + '/' + sline_file
+        fname = 'index.html'
 
         slines = umkr.get_index_html(biglogo=logo_big, smalllogo=logo_small)
 
         output_lines = "\n".join(slines)
         with open(fname, "w", encoding='utf-8') as fw:
             fw.writelines(output_lines)
+
+        MyPCMacStr = '0x502b73d0046d'
+        current_mac_str = hex(uuid.getnode())
+
+        copyIndexIcons = True
+
+        webStackPageDir = None
+        if current_mac_str == MyPCMacStr:
+            # If current PC is my ASUS computer
+            webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
+        else:
+            # If current PC is my work computer from SNSP
+            webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
+
+        umkr.final_index_html = "index.html"
+
+        if copyIndexIcons is True:
+            icon_dest = webStackPageDir + "/assets/images/logos"
+            index_html_dest = webStackPageDir + "/cn"
+            umkr.do_copy(icon_dest=icon_dest, index_html_dest=index_html_dest)
 
 
     @staticmethod
