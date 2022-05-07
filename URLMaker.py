@@ -646,7 +646,7 @@ class URLMaker:
         # Copy index.html file
         src_idx_html = self.final_index_html
         dest_idx_html = index_html_dest + "/" + self.final_index_html
-        print("Copying {} to {}".format(src_idx_html, dest_idx_html))
+        print("[INFO] Copying {} to {}".format(src_idx_html, dest_idx_html))
         shutil.copy(src=src_idx_html, dst=dest_idx_html)
 
         # Copy icon files
@@ -663,7 +663,7 @@ class URLMaker:
             shutil.copy(src=srcname, dst=destname)
             copy_cnt += 1
         if already_exist_cnt != 0:
-            print("[WARNING] {} icon already exists in destination directory, skip copy".format(already_exist_cnt))
+            print("[WARNING] {} icons already exists in destination directory, skip copy".format(already_exist_cnt))
         print("[INFO] Copied {} icons".format(copy_cnt))
 
     @staticmethod
