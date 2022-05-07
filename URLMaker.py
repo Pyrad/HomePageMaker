@@ -444,7 +444,7 @@ class URLMaker:
         #    print(sline)
         return allsectlines
 
-    def get_main_footer(self):
+    def get_main_footer(self, yearBegin, yearEnd, designName, authorLink, authorName):
         return  '\t\t\t<!-- Main Footer -->\n'\
                 '\t\t\t<!-- Choose between footer styles: "footer-type-1" or "footer-type-2" -->\n'\
                 '\t\t\t<!-- Add class "sticky" to  always stick the footer to the end of page (if page contents is small) -->\n'\
@@ -453,8 +453,8 @@ class URLMaker:
                 '\t\t\t\t<div class="footer-inner">\n'\
                 '\t\t\t\t\t<!-- Add your copyright text here -->\n'\
                 '\t\t\t\t\t<div class="footer-text">\n'\
-                '\t\t\t\t\t\t&copy; 2017-2020\n'\
-                '\t\t\t\t\t\t<a href="../cn/about.html"><strong>WebStack</strong></a> design by <a href="http://viggoz.com" target="_blank"><strong>Viggo</strong></a>\n'\
+                '\t\t\t\t\t\t&copy; {}-{}\n'\
+                '\t\t\t\t\t\t<a href="../cn/about.html"><strong>{}</strong></a> design by <a href="{}" target="_blank"><strong>{}</strong></a>\n'\
                 '\t\t\t\t\t\t<!--  - Purchase for only <strong>23$</strong> -->\n'\
                 '\t\t\t\t\t</div>\n'\
                 '\t\t\t\t\t<!-- Go to Top Link, just add rel="go-top" to any link to add this functionality -->\n'\
@@ -464,17 +464,21 @@ class URLMaker:
                 '\t\t\t\t\t\t</a>\n'\
                 '\t\t\t\t\t</div>\n'\
                 '\t\t\t\t</div>\n'\
-                '\t\t\t</footer>'
+                '\t\t\t</footer>'.format(yearBegin, yearEnd, designName, authorLink, authorName)
 
     def get_main_content(self):
         main_content_lines = []
         tag_start = '\t\t<div class="main-content">'
         tag_end = '\t\t</div>'
 
+        yearBegin, yearEnd = 2021, 2022
+        designName, authorName = 'LifeTour', 'Pyrad'
+        authorLink = 'https://pyrad.github.io/'
+
         main_content_lines.append(tag_start)
         main_content_lines.append(self.get_navbar_raw_text())
         main_content_lines.extend(self.get_all_section_rows())
-        main_content_lines.append(self.get_main_footer())
+        main_content_lines.append(self.get_main_footer(yearBegin, yearEnd, designName, authorLink, authorName))
         main_content_lines.append(tag_end)
 
         return main_content_lines
@@ -664,10 +668,6 @@ class URLMaker:
         sline_file = 'sline_tmp.html'
         fname = testdir + '/' + sline_file
 
-        #slines = umkr.get_side_bar_menu(biglogo=logo_big, smalllogo=logo_small)
-        #slines.extend(umkr.get_main_content())
-
-        #slines = umkr.get_page_container(biglogo=logo_big, smalllogo=logo_small)
         slines = umkr.get_index_html(biglogo=logo_big, smalllogo=logo_small)
 
         output_lines = "\n".join(slines)
