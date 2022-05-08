@@ -2,6 +2,9 @@ import re
 import os
 import shutil
 import uuid
+from colorama import init as clma_init
+from colorama import Fore as clma_Fore
+from colorama import Back as clma_Back
 
 
 class URLMaker:
@@ -57,6 +60,18 @@ class URLMaker:
         :return: True if it exists, otherwise False
         """
         return True if os.path.isdir(fdir) else False
+
+    def print_error(self, errmsgstr):
+        print(clma_Back.RED + '[ ERROR ]', end="")
+        print('', errmsgstr)
+
+    def print_info(self, infomsgstr):
+        print(clma_Back.GREEN + '[  INFO ]', end="")
+        print('', infomsgstr)
+
+    def print_warning(self, warnmsgstr):
+        print(clma_Back.LIGHTYELLOW_EX + '[WARNING]', end="")
+        print('', warnmsgstr)
 
     def generate_body_rows(self, outfname="url.cols.html"):
         """
@@ -618,7 +633,7 @@ class URLMaker:
         icon_copy_list = []
         icon_missing_list = []
         if len(all_icon_set) == 0:
-            print("[ERROR] icon list is empty, skip copy")
+            self.print_error("icon list is empty, skip copy")
             return
         else:
             for icon in all_icon_set:
@@ -627,26 +642,26 @@ class URLMaker:
                     icon_copy_list.append(icon)
                 else:
                     icon_missing_list.append(icon)
-            print("[INFO] number of icons to copy is", len(icon_copy_list))
+            self.print_info("number of icons to copy is {}".format(len(icon_copy_list)))
             if len(icon_missing_list) != 0:
-                print("[WARNING] Missing following icon files ({} in total) to copy:".format(len(icon_missing_list)))
+                self.print_warning("Missing following icon files ({} in total) to copy:".format(len(icon_missing_list)))
                 for icon in icon_missing_list:
                     print("  ", icon)
 
         if not self.check_file_exists(self.final_index_html):
-            print("[ERROR] index file doesn't exist, skip copy")
+            self.print_error("index file doesn't exist, skip copy")
             return
         if not self.check_dir_exist(icon_dest):
-            print("[ERROR] icon_dest directory doesn't exist, skip copy")
+            self.print_error("icon_dest directory doesn't exist, skip copy")
             return
         if not self.check_dir_exist(index_html_dest):
-            print("[ERROR] index directory doesn't exist, skip copy")
+            self.print_error("index directory doesn't exist, skip copy")
             return
 
         # Copy index.html file
         src_idx_html = self.final_index_html
         dest_idx_html = index_html_dest + "/" + self.final_index_html
-        print("[INFO] Copying {} to {}".format(src_idx_html, dest_idx_html))
+        self.print_info("Copying {} to {}".format(src_idx_html, dest_idx_html))
         shutil.copy(src=src_idx_html, dst=dest_idx_html)
 
         # Copy icon files
@@ -663,11 +678,13 @@ class URLMaker:
             shutil.copy(src=srcname, dst=destname)
             copy_cnt += 1
         if already_exist_cnt != 0:
-            print("[WARNING] {} icons already exists in destination directory, skip copy".format(already_exist_cnt))
-        print("[INFO] Copied {} icons".format(copy_cnt))
+            self.print_warning("{} icons already exists in destination directory, skip copy".format(already_exist_cnt))
+        self.print_info("Copied {} icons".format(copy_cnt))
 
     @staticmethod
     def default_test():
+        clma_init(autoreset=True)
+
         url_list_file = "classified_urls.html"
         str_imgf = "undef.png"
         umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
