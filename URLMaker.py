@@ -73,103 +73,6 @@ class URLMaker:
         print(clma_Back.LIGHTYELLOW_EX + '[WARNING]', end="")
         print('', warnmsgstr)
 
-    def generate_body_rows(self, outfname="url.cols.html"):
-        """
-        Generate the main page body which contains the URLs
-        :param outfname the file name to write out
-        :return: If the outfname is successfully written out
-        """
-
-        # First all of first, reset some internal variables
-        self.reset()
-
-        # First check if the URL list file exists
-        fname = self.url_file
-        if not URLMaker.check_file_exists(fname):
-            print("Error, file not found:", fname)
-            return
-
-        #outfname = "url.cols.html"
-        outf = open(outfname, "w", encoding='utf-8')
-
-        dbg_cnt = 0
-
-        #url_pattern = re.compile(r'.*data-url="(\S+)".*title="(\S+)"')
-        url_pattern = re.compile(r'data-url="(.*)"')
-        title_pattern = re.compile(r'title="(.*)"')
-        img_pattern = re.compile(r'image="(.*)"')
-
-        line_cnt, real_line_cnt, colcnt = 0, 0, 0
-
-        with open(fname, 'r', encoding='utf-8') as f:
-            for line in f.readlines():
-                line_cnt += 1
-                l = line.strip()
-                if len(l) == 0 or l.startswith("<!--"):
-                    continue
-                if not l.startswith("data-url"):
-                    continue
-
-                kwlist = l.split(",")
-
-                assert len(kwlist) == 2 or len(kwlist) == 3
-
-                url_m = url_pattern.match(kwlist[0].strip())
-                title_m = title_pattern.match(kwlist[1].strip())
-                img_m = img_pattern.match(kwlist[2].strip()) if len(kwlist) == 3 else None
-
-                if url_m is None or title_m is None:
-                    continue
-                str_url = url_m.group(1)
-                str_webname = title_m.group(1)
-                str_imgf = "undef128x128.png" if img_m is None else img_m.group(1)
-                str_imgf = "undef128x128.png" if len(str_imgf) == 0 else str_imgf
-                str_descri = str_webname
-
-                # Keep icon names
-                if str_imgf != "undef128x128.png" and not str_imgf in self.icon_list:
-                    self.icon_list.append(str_imgf)
-
-                dbg_cnt += 1
-
-                self.url_number += 1
-
-                if colcnt == 0:
-                    outf.write(self.row_start_label())
-                    outf.write("\n")
-                outf.write(self.col_raw_text(str_url, str_imgf, str_webname, str_descri))
-                if colcnt == 3:
-                    #outf.write("\n")
-                    outf.write(self.row_end_label())
-                    outf.write("\n")
-
-                real_line_cnt += 1
-                colcnt = (colcnt + 1) % self.ncol
-
-                if self.dbg_row_limit > 0 and dbg_cnt >= self.dbg_row_limit:
-                    break
-        outf.close()
-
-        tmpname = "mytmp.html"
-        with open(outfname, "r", encoding='utf-8') as af:
-            line_list = af.readlines()
-            output_lines = "\t\t\t".join(line_list)
-            output_lines = "\t\t\t" + output_lines
-            with open(tmpname, "w", encoding='utf-8') as fw:
-                fw.writelines(output_lines)
-
-        os.remove(outfname)
-        os.rename(tmpname, outfname)
-
-        print("File line count {} (useful count {})".format(line_cnt, real_line_cnt))
-        print("File size =", os.path.getsize(outfname))
-        print("End of function generate_body_rows")
-
-        self.body_file = outfname
-
-        return URLMaker.check_file_exists(self.body_file)
-
-
     def col_raw_text(self, url, imgf, webname, descri):
         return \
 '''    <div class="col-sm-3">
@@ -581,45 +484,6 @@ class URLMaker:
         #     for urlstr in msglist:
         #         print("\t", urlstr)
 
-    def generate_index_html(self, fname="index.html", body_file="url.cols.html"):
-        if not URLMaker.check_file_exists(self.index_file_head):
-            print("[ERROR] The head part (file) for the final index.html doesn't exist")
-            return False
-        if not URLMaker.check_file_exists(self.index_file_tail):
-            print("[ERROR] The tail part (file) for the final index.html doesn't exist")
-            return False
-        if not self.generate_body_rows(body_file):
-            print("[ERROR] Failed to create the body part (file) for the final index.html")
-            return False
-
-        self.final_index_html = fname
-
-        with open(fname, "wb") as fout:
-            fhead = open(self.index_file_head, "rb")
-            fout.write(fhead.read())
-            fhead.close()
-
-            fbody = open(self.body_file, "rb")
-            fout.write(fbody.read())
-            fbody.close()
-
-            # A temp fix to avoid mismatched label
-            if self.url_number % 4 != 0:
-                fout.write("\t\t\t</div>".encode('utf-8'))
-
-            ftail = open(self.index_file_tail, "rb")
-            fout.write(ftail.read())
-            ftail.close()
-
-            fout.close()
-
-        if not URLMaker.check_file_exists(fname):
-            print("[ERROR] Failed to create the final index.html:", fname)
-            return False
-
-        print("File size of {}: {}".format(fname, os.path.getsize(fname)))
-        return True
-
     def do_copy(self, icon_dest, index_html_dest):
         # Copy icon images
         # First get all the icon images list (represented by a set)
@@ -727,29 +591,7 @@ class URLMaker:
             umkr.do_copy(icon_dest=icon_dest, index_html_dest=index_html_dest)
 
 
-    @staticmethod
-    def default_run():
-        url_list_file = "classified_urls.html"
-        str_imgf = "undef.png"
-        umkr = URLMaker(url_list_file=url_list_file, default_img=str_imgf)
-
-        umkr.generate_index_html("index.html")
-
-        do_copy = True
-        #webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
-        webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
-        webStackPageDir_snps = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
-
-        use_default_pre = True
-        if do_copy:
-            path_pre = webStackPageDir if use_default_pre else webStackPageDir_snps
-            icon_dest = path_pre + "/assets/images/logos"
-            index_html_dest = path_pre + "/cn"
-            umkr.do_copy(icon_dest=icon_dest, index_html_dest=index_html_dest)
-
-
 if __name__ == "__main__":
-    #URLMaker.default_run()
     URLMaker.default_test()
 
 
