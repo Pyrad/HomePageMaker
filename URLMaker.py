@@ -554,6 +554,7 @@ class URLMaker:
 
         MyPCMacStr = '0x502b73d0046d'
         MyLenovoMacStr = '0x1263c8d8c61f'
+        MySnpsMacStr = '0xf4ee08c054fe'
         current_mac_str = hex(uuid.getnode())
 
         copyIndexIcons = True
@@ -564,9 +565,11 @@ class URLMaker:
             webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
         elif current_mac_str == MyLenovoMacStr:
             webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
-        else:
+        elif current_mac_str == MySnpsMacStr:
             # If current PC is my work computer from SNSP
             webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
+        else:
+            umkr.print_error("Can't identify the mac address ({}) for this PC, please verify.".format(current_mac_str))
 
         umkr.final_index_html = "index.html"
 
