@@ -498,6 +498,7 @@ class URLMaker:
             return
         if not self.check_dir_exist(icon_dest):
             self.print_error("icon_dest directory doesn't exist, skip copy")
+            self.print_error("  icon_dest directory is {}".format(icon_dest))
             return
         if not self.check_dir_exist(index_html_dest):
             self.print_error("index directory doesn't exist, skip copy")
@@ -552,6 +553,7 @@ class URLMaker:
             fw.writelines(output_lines)
 
         MyPCMacStr = '0x502b73d0046d'
+        MyLenovoMacStr = '0x1263c8d8c61f'
         current_mac_str = hex(uuid.getnode())
 
         copyIndexIcons = True
@@ -560,6 +562,8 @@ class URLMaker:
         if current_mac_str == MyPCMacStr:
             # If current PC is my ASUS computer
             webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
+        elif current_mac_str == MyLenovoMacStr:
+            webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
         else:
             # If current PC is my work computer from SNSP
             webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
