@@ -555,6 +555,7 @@ class URLMaker:
         MyPCMacStr = '0x502b73d0046d'
         MyLenovoMacStr = '0x1263c8d8c61f'
         MySnpsMacStr = '0xf4ee08c054fe'
+        MySnpsMacStrWiFi = '0x7c70db2df05e'
         current_mac_str = hex(uuid.getnode())
 
         copyIndexIcons = True
@@ -565,7 +566,7 @@ class URLMaker:
             webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
         elif current_mac_str == MyLenovoMacStr:
             webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
-        elif current_mac_str == MySnpsMacStr:
+        elif current_mac_str == MySnpsMacStr or current_mac_str == MySnpsMacStrWiFi:
             # If current PC is my work computer from SNSP
             webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
         else:
