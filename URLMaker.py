@@ -5,7 +5,7 @@ import uuid
 from colorama import init as clma_init
 from colorama import Fore as clma_Fore
 from colorama import Back as clma_Back
-
+from getmac import get_mac_address as gma
 
 class URLMaker:
     def __init__(self, url_list_file, default_img="github120x120.png", ncolumn=4):
@@ -527,6 +527,31 @@ class URLMaker:
             self.print_warning("{} icons already exists in destination directory, skip copy".format(already_exist_cnt))
         self.print_info("Copied {} icons".format(copy_cnt))
 
+    def get_data_dir_on_this_computer_by_mac_address(self):
+        MyPCMacStr = '0x502b73d0046d'
+        MyLenovoMacStr = '0x1063c8d8c61f'
+        MySnpsMacStr = '0xf4ee08c054fe'
+        MySnpsMacStrWiFi = '0x7c70db2df05e'
+        # Looks uuid.getnode() sometimes return an invalid number
+        # Still don't know why, so use get_mac module instead
+        # 2023-04-15
+        #current_mac_str = hex(uuid.getnode())
+        current_mac_str = hex(int(gma().replace(':', ''), 16))
+
+        webStackPageDir = None
+        if current_mac_str == MyPCMacStr:
+            # If current PC is my ASUS computer
+            webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
+        elif current_mac_str == MyLenovoMacStr:
+            webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
+        elif current_mac_str == MySnpsMacStr or current_mac_str == MySnpsMacStrWiFi:
+            # If current PC is my work computer from SNSP
+            webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
+        else:
+            self.print_error("Can't identify the mac address ({}) for this PC, please verify.".format(current_mac_str))
+
+        return webStackPageDir, current_mac_str
+
     @staticmethod
     def default_test():
         clma_init(autoreset=True)
@@ -552,25 +577,11 @@ class URLMaker:
         with open(fname, "w", encoding='utf-8') as fw:
             fw.writelines(output_lines)
 
-        MyPCMacStr = '0x502b73d0046d'
-        MyLenovoMacStr = '0x1263c8d8c61f'
-        MySnpsMacStr = '0xf4ee08c054fe'
-        MySnpsMacStrWiFi = '0x7c70db2df05e'
-        current_mac_str = hex(uuid.getnode())
-
         copyIndexIcons = True
 
-        webStackPageDir = None
-        if current_mac_str == MyPCMacStr:
-            # If current PC is my ASUS computer
-            webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
-        elif current_mac_str == MyLenovoMacStr:
-            webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
-        elif current_mac_str == MySnpsMacStr or current_mac_str == MySnpsMacStrWiFi:
-            # If current PC is my work computer from SNSP
-            webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
-        else:
-            umkr.print_error("Can't identify the mac address ({}) for this PC, please verify.".format(current_mac_str))
+        webStackPageDir, current_mac_str = umkr.get_data_dir_on_this_computer_by_mac_address()
+        if webStackPageDir is None:
+            raise ValueError(f"Invalid mac address found: {current_mac_str}")
 
         umkr.final_index_html = "index.html"
 
