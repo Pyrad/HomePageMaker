@@ -531,7 +531,7 @@ class URLMaker:
         MyPCMacStr = '0x502b73d0046d'
         MyLenovoMacStr = '0x1063c8d8c61f'
         MySnpsMacStr = '0xf4ee08c054fe'
-        MySnpsMacStrWiFi = '0x7c70db2df05e'
+        MySnpsMacStrWiFi = '0x7c70db2df05a'
         # Looks uuid.getnode() sometimes return an invalid number
         # Still don't know why, so use get_mac module instead
         # 2023-04-15
