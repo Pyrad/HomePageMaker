@@ -568,7 +568,7 @@ class URLMaker:
 
         MyPCCpuName = 'Currently_Unknown' # Need to get info later
         MyLenovoCpuName = 'AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx'
-        MySnpsCpuName = '11th Gen Intel (R) Core(TM) i7-1185G7 @ 3.00GHz'
+        MySnpsCpuName = '11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz'
 
         webStackPageDir = None
         if cpu_name == MyPCCpuName:
