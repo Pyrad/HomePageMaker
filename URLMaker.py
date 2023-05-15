@@ -2,6 +2,8 @@ import re
 import os
 import shutil
 import uuid
+import platform
+import subprocess
 from colorama import init as clma_init
 from colorama import Fore as clma_Fore
 from colorama import Back as clma_Back
@@ -527,6 +529,62 @@ class URLMaker:
             self.print_warning("{} icons already exists in destination directory, skip copy".format(already_exist_cnt))
         self.print_info("Copied {} icons".format(copy_cnt))
 
+    @staticmethod
+    def get_cpu_name():
+        """
+        Check current machine's CPU name
+        :return: A string representing current machine's CPU name.
+                 If not found, return an empty string
+        """
+        if platform.system() == "Windows":
+            return platform.processor()
+        elif platform.system() == "Darwin":
+            os.environ['PATH'] = os.environ['PATH'] + os.pathsep + '/usr/sbin'
+            command = "sysctl -n machdep.cpu.brand_string"
+            return subprocess.check_output(command).strip()
+        elif platform.system() == "Linux":
+            command = "cat /proc/cpuinfo"
+            all_info = subprocess.check_output(command, shell=True).decode().strip()
+            for line in all_info.split("\n"):
+                if "model name" in line:
+                    return re.sub(".*model name.*:", "", line, 1)
+        return ""
+
+    def get_data_dir_on_this_computer_by_cpu_name(self):
+        cur_is_win = platform.system() == "Windows"
+        cpu_name = "n/a"
+        if cur_is_win is True:
+            # Assume current it is running on Windows
+            # For win32com, refer to the link below
+            # https://learn.microsoft.com/zh-cn/windows/win32/cimwin32prov/win32-processor
+            from win32com.client import GetObject
+            root_winmgmts = GetObject("winmgmts:root\cimv2")
+            cpus = root_winmgmts.ExecQuery("Select * from Win32_Processor")
+            cpu_name = cpus[0].Name
+            cpu_name = cpu_name.strip()
+        else:
+            # Assume current it is running on Linux or other platforms
+            cpu_name = self.get_cpu_name()
+
+        MyPCCpuName = 'Currently_Unknown' # Need to get info later
+        MyLenovoCpuName = 'AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx'
+        MySnpsCpuName = '11th Gen Intel (R) Core(TM) i7-1185G7 @ 3.00GHz'
+
+        webStackPageDir = None
+        if cpu_name == MyPCCpuName:
+            # If current PC is my ASUS computer
+            webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
+        elif cpu_name == MyLenovoCpuName:
+            webStackPageDir = "D:/Pyrad/WebHomePage/WebStackPage.github.io-master"
+        elif cpu_name == MySnpsCpuName:
+            # If current PC is my work computer from SNSP
+            webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
+        else:
+            self.print_error("Can't identify the CPU name ({}) for this PC, please verify.".format(cpu_name))
+
+        return webStackPageDir, cpu_name
+
+
     def get_data_dir_on_this_computer_by_mac_address(self):
         MyPCMacStr = '0x502b73d0046d'
         MyLenovoMacStr = '0x1063c8d8c61f'
@@ -579,9 +637,13 @@ class URLMaker:
 
         copyIndexIcons = True
 
-        webStackPageDir, current_mac_str = umkr.get_data_dir_on_this_computer_by_mac_address()
+        #webStackPageDir, current_mac_str = umkr.get_data_dir_on_this_computer_by_mac_address()
+        #if webStackPageDir is None:
+        #    raise ValueError(f"Invalid mac address found: {current_mac_str}")
+
+        webStackPageDir, cpu_name = umkr.get_data_dir_on_this_computer_by_cpu_name()
         if webStackPageDir is None:
-            raise ValueError(f"Invalid mac address found: {current_mac_str}")
+            raise ValueError(f"Unknown CPU found for this machine: {cpu_name}. Please check if CPU is expected or not.")
 
         umkr.final_index_html = "index.html"
 
