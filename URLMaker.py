@@ -566,12 +566,12 @@ class URLMaker:
             # Assume current it is running on Linux or other platforms
             cpu_name = self.get_cpu_name()
 
-        MyPCCpuName = 'Currently_Unknown' # Need to get info later
+        MyAsusPCCpuName = 'Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz'
         MyLenovoCpuName = 'AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx'
         MySnpsCpuName = '11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz'
 
         webStackPageDir = None
-        if cpu_name == MyPCCpuName:
+        if cpu_name == MyAsusPCCpuName:
             # If current PC is my ASUS computer
             webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
         elif cpu_name == MyLenovoCpuName:
