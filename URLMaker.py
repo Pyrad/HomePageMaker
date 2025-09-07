@@ -569,6 +569,7 @@ class URLMaker:
         MyAsusPCCpuName = 'Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz'
         MyLenovoCpuName = 'AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx'
         MySnpsCpuName = '11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz'
+        MyAsusB650MPCCpuName = 'AMD Ryzen 7 9700X 8-Core Processor'
 
         webStackPageDir = None
         if cpu_name == MyAsusPCCpuName:
@@ -579,8 +580,12 @@ class URLMaker:
         elif cpu_name == MySnpsCpuName:
             # If current PC is my work computer from SNSP
             webStackPageDir = "C:/Users/longc/Downloads/WebStackPage.github.io-master"
+        elif cpu_name == MyAsusB650MPCCpuName:
+            # If current PC is my ASUS TUF B650M WIFI Plus computer
+            webStackPageDir = "D:/Programs/TempDownload/WebStackPage.github.io-master/WebStackPage.github.io-master"
         else:
             self.print_error("Can't identify the CPU name ({}) for this PC, please verify.".format(cpu_name))
+            self.print_error("Why need this? Need to check where to install the generated html files.")
 
         return webStackPageDir, cpu_name
 
